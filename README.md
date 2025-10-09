@@ -10,17 +10,20 @@ This project serves as a template for future MCP server deployments.
 
 ```
 clickup-mcp/
-├── README.md                     # This file
-├── DEPLOYMENT_PLAN_V2.md        # Main deployment plan (lessons learned from n8n-mcp)
+├── README.md                      # This file
+├── DEPLOYMENT_PLAN_V2.md         # Main deployment plan (lessons learned from n8n-mcp)
 ├── clickup/
-│   ├── DEPLOYMENT.md            # ✅ Complete ClickUp deployment guide
-│   └── DEPLOYMENT_NOTES.md      # ⚠️ Important config notes (--env syntax)
-└── scripts/                      # ✅ Helper scripts
-    ├── README.md                # Script documentation
-    ├── setup-clickup-secrets.sh # Create secrets in Secret Manager
-    ├── deploy-clickup.sh        # Deploy service on VM (updated syntax)
-    ├── health-check-all.sh      # Check health of all services
-    └── test-mcp-endpoint.sh     # Test MCP JSON-RPC endpoint
+│   ├── DEPLOYMENT.md             # ✅ Complete ClickUp deployment guide
+│   └── DEPLOYMENT_NOTES.md       # ⚠️ Important config notes (--env syntax)
+├── scripts/                       # ✅ Helper scripts
+│   ├── README.md                 # Script documentation
+│   ├── setup-clickup-secrets.sh  # Create secrets in Secret Manager
+│   ├── deploy-clickup.sh         # Deploy service on VM (updated syntax)
+│   ├── health-check-all.sh       # Check health of all services
+│   └── test-mcp-endpoint.sh      # Test MCP JSON-RPC endpoint
+└── windows-bridge/                # ✅ Claude Code bridge script
+    ├── clickup-mcp-bridge.js     # Stdio → HTTPS bridge for Claude Code
+    └── README.md                 # Bridge setup instructions
 ```
 
 ## 🎯 Overview
@@ -91,6 +94,33 @@ See [clickup/DEPLOYMENT.md](./clickup/DEPLOYMENT.md) Step 6
 # Test external access
 ./scripts/test-mcp-endpoint.sh clickup-mcp --external
 ```
+
+### 5. Configure Clients
+
+**Cursor WSL/Windows** - Add to `~/.cursor/mcp.json`:
+```json
+{
+  "mcpServers": {
+    "clickup-mcp": {
+      "url": "https://clickup-mcp.aboundtechology.com/mcp",
+      "transport": {
+        "type": "http",
+        "headers": {
+          "Authorization": "Bearer <YOUR_AUTH_TOKEN>"
+        }
+      }
+    }
+  }
+}
+```
+
+**Claude Code (in Cursor)** - Use bridge script:
+```bash
+# Copy bridge script and update AUTH_TOKEN
+claude mcp add clickup-mcp node /path/to/clickup-mcp-bridge.js
+```
+
+See [windows-bridge/README.md](./windows-bridge/README.md) for complete setup.
 
 **Estimated Time:** 2-4 hours (first deployment)
 
