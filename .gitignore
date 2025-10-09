@@ -1,0 +1,57 @@
+# Secrets and credentials
+*.key
+*.pem
+*.env
+.env.*
+secrets/
+credentials/
+
+# API keys and tokens
+*api-key*
+*token*
+*secret*
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Node modules (if any local testing)
+node_modules/
+package-lock.json
+yarn.lock
+
+# System files
+Thumbs.db
+.DS_Store
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Local testing artifacts
+test-output/
+.test/
+
+# Claude workspace
+.claude/
+
+# Personal notes (keep deployment notes but ignore personal ones)
+PERSONAL_NOTES.md
+TODO.md
