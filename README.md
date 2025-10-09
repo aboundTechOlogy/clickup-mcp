@@ -114,13 +114,15 @@ See [clickup/DEPLOYMENT.md](./clickup/DEPLOYMENT.md) Step 6
 }
 ```
 
-**Claude Code (in Cursor)** - Use bridge script:
+**Claude Code** - New HTTP transport (easiest!):
 ```bash
-# Copy bridge script and update AUTH_TOKEN
-claude mcp add clickup-mcp node /path/to/clickup-mcp-bridge.js
+# Direct HTTP connection - no bridge needed!
+claude mcp add --transport http clickup-mcp https://clickup-mcp.aboundtechology.com/mcp
 ```
 
-See [windows-bridge/README.md](./windows-bridge/README.md) for complete setup.
+**Claude Desktop** - Add via Settings → MCP Servers with URL and bearer token
+
+See [CLIENT_SETUP.md](./CLIENT_SETUP.md) for complete setup for all clients.
 
 **Estimated Time:** 2-4 hours (first deployment)
 
