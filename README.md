@@ -114,10 +114,14 @@ See [clickup/DEPLOYMENT.md](./clickup/DEPLOYMENT.md) Step 6
 }
 ```
 
-**Claude Code** - New HTTP transport (easiest!):
+**Claude Code** - HTTP transport (easiest!):
 ```bash
-# Direct HTTP connection - no bridge needed!
-claude mcp add --transport http clickup-mcp https://clickup-mcp.aboundtechology.com/mcp
+# Get token
+TOKEN=$(gcloud secrets versions access latest --secret=clickup-mcp-auth-token --project=abound-infr)
+
+# Add with HTTP transport - no bridge needed!
+claude mcp add -t http clickup-mcp https://clickup-mcp.aboundtechology.com/mcp \
+  -H "Authorization: Bearer $TOKEN"
 ```
 
 **Claude Desktop** - Add via Settings → MCP Servers with URL and bearer token
