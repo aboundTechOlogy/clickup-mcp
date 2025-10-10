@@ -55,3 +55,15 @@ test-output/
 # Personal notes (keep deployment notes but ignore personal ones)
 PERSONAL_NOTES.md
 TODO.md
+
+# OAuth database (runtime generated)
+oauth.db
+*.db
+*.db-journal
+
+# Compiled TypeScript
+oauth-proxy/dist/*.js
+oauth-proxy/dist/*.js.map
+
+# Keep dist directory structure but ignore compiled files for now
+!oauth-proxy/dist/.gitkeep

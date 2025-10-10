@@ -1,251 +1,158 @@
-# ClickUp MCP Deployment Project
+# GCP MCP Deployment Project
 
-This project contains documentation and scripts for deploying the ClickUp MCP server to GCP VM alongside the existing n8n-mcp server.
+Production deployment of MCP servers (n8n-mcp and ClickUp MCP) on Google Cloud Platform.
 
-**Repository:** `aboundTechOlogy/clickup-mcp`
+**Status**: ✅ **FULLY OPERATIONAL**
 
-This project serves as a template for future MCP server deployments.
+## 🎯 Quick Links
+
+- **[Final Deployment Status](docs/deployment/FINAL_STATUS.md)** - Complete deployment details and test results
+- **[Client Setup Guide](docs/client-setup/CLIENT_SETUP.md)** - Connect Claude Code to the servers
+- **[OAuth Setup](docs/oauth/GITHUB_OAUTH_COMPLETE_SETUP.md)** - GitHub OAuth configuration
+
+## 📡 Live Endpoints
+
+| Service | Endpoint | Status |
+|---------|----------|--------|
+| n8n-MCP | `http://35.185.61.108:5678` | ✅ Running |
+| ClickUp MCP | `http://35.185.61.108:3456` | ✅ Running |
+| OAuth Proxy | `http://35.185.61.108:3457` | ✅ Running |
 
 ## 📁 Project Structure
 
 ```
-clickup-mcp/
-├── README.md                      # This file
-├── DEPLOYMENT_PLAN_V2.md         # Main deployment plan (lessons learned from n8n-mcp)
-├── clickup/
-│   ├── DEPLOYMENT.md             # ✅ Complete ClickUp deployment guide
-│   └── DEPLOYMENT_NOTES.md       # ⚠️ Important config notes (--env syntax)
-├── scripts/                       # ✅ Helper scripts
-│   ├── README.md                 # Script documentation
-│   ├── setup-clickup-secrets.sh  # Create secrets in Secret Manager
-│   ├── deploy-clickup.sh         # Deploy service on VM (updated syntax)
-│   ├── health-check-all.sh       # Check health of all services
-│   └── test-mcp-endpoint.sh      # Test MCP JSON-RPC endpoint
-└── windows-bridge/                # ✅ Claude Code bridge script
-    ├── clickup-mcp-bridge.js     # Stdio → HTTPS bridge for Claude Code
-    └── README.md                 # Bridge setup instructions
+gcp-mcp-deployment/
+├── README.md                           # This file
+├── DEPLOYMENT_PLAN_V2.md              # Original deployment planning
+│
+├── docs/                               # 📚 Documentation
+│   ├── deployment/                     # Deployment guides and status
+│   │   ├── FINAL_STATUS.md            # ✅ Current deployment status
+│   │   ├── CLICKUP_DEPLOYMENT.md      # ClickUp deployment guide
+│   │   └── CLICKUP_NOTES.md           # Important ClickUp config notes
+│   ├── client-setup/                   # Client configuration
+│   │   ├── CLIENT_SETUP.md            # Claude Code setup instructions
+│   │   └── MIGRATION_GUIDE.md         # Bridge → HTTP migration
+│   └── oauth/                          # OAuth documentation
+│       ├── GITHUB_OAUTH_COMPLETE_SETUP.md
+│       ├── GITHUB_OAUTH_SETUP.md
+│       └── OAUTH_EXPLANATION.md
+│
+├── scripts/                            # 🔧 Deployment & maintenance scripts
+│   ├── README.md                       # Script documentation
+│   ├── setup-clickup-secrets.sh       # Initialize GCP secrets
+│   ├── deploy-clickup.sh              # Deploy ClickUp MCP
+│   ├── deploy-oauth-proxy.sh          # Deploy OAuth proxy
+│   ├── health-check-all.sh            # Check all services
+│   └── test-mcp-endpoint.sh           # Test MCP endpoints
+│
+├── oauth-proxy/                        # 🔐 OAuth proxy source code
+│   ├── src/                            # TypeScript source
+│   ├── dist/                           # Compiled JavaScript
+│   ├── package.json
+│   └── README.md
+│
+└── windows-bridge/                     # 🪟 Windows/WSL bridge
+    ├── clickup-mcp-bridge.js          # Stdio → HTTPS bridge script
+    └── README.md
 ```
-
-## 🎯 Overview
-
-**Goal:** Deploy ClickUp MCP server to GCP VM (abound-infra-vm) alongside existing n8n-mcp server
-
-**Current Status:**
-- ✅ n8n-mcp - Deployed and operational (port 3000)
-- 🚧 ClickUp MCP - Documentation and scripts ready (port 3002)
-- 🔜 Future: Notion MCP, Google Workspace MCP, GitHub MCP (separate projects)
-
-## 📚 Key Documents
-
-### [DEPLOYMENT_PLAN_V2.md](./DEPLOYMENT_PLAN_V2.md)
-**Main deployment guide** incorporating all lessons learned from n8n-mcp deployment:
-- Proper directory structure (`/opt/ai-agent-platform/mcp-servers/`)
-- Google Secrets Manager integration
-- Systemd service configuration
-- Multi-environment client setup
-- Bridge scripts for Claude Code Windows
-- Comprehensive testing procedures
-
-## 🔑 Critical Lessons from n8n-mcp
-
-1. **Directory Investigation First** - Always explore VM structure before deploying
-2. **Google Secrets Manager** - Essential for credential management
-3. **Secrets Loader Scripts** - Every service needs `load-secrets.sh`
-4. **Systemd Configuration** - Specific patterns for security and resource limits
-5. **Session-Based Auth** - Track `Mcp-Session-Id` headers
-6. **Bridge Scripts** - Required for Claude Code Windows compatibility
-7. **Multi-Environment Testing** - Test all 5 client environments
-8. **Caddy Reverse Proxy** - Extend existing configuration
-9. **Comprehensive Health Checks** - Local + external + MCP protocol
-10. **Documentation Standards** - Document everything as you go
 
 ## 🚀 Quick Start
 
-### 1. Create Secrets (run from local machine)
+### For Users (Connecting Claude Code)
+
+1. Follow the **[Client Setup Guide](docs/client-setup/CLIENT_SETUP.md)**
+2. Add the MCP server configuration to your Claude Code settings
+3. Restart Claude Code
+4. Start using n8n and ClickUp tools!
+
+### For Administrators (Deployment)
+
+1. Review **[DEPLOYMENT_PLAN_V2.md](DEPLOYMENT_PLAN_V2.md)** for architecture
+2. Use scripts in `scripts/` for deployment and maintenance
+3. Check **[Final Status](docs/deployment/FINAL_STATUS.md)** for current state
+
+## 🔐 Security
+
+- All credentials stored in **GCP Secret Manager**
+- Services use systemd with resource limits
+- OAuth tokens managed by dedicated proxy service
+- No hardcoded credentials in any configuration files
+
+## 🛠️ Services Overview
+
+### n8n-MCP Server
+- **535 nodes** including 269 AI tools
+- **2,598 workflow templates** available
+- Full workflow creation, validation, and execution
+- Template management and node documentation
+
+### ClickUp MCP Server
+- **36 tools** for complete ClickUp integration
+- Tasks, lists, folders, and workspace management
+- Bulk operations for efficiency
+- Time tracking and tag management
+- File attachments and comments
+- OAuth-based authentication
+
+### OAuth Proxy
+- GitHub OAuth integration for ClickUp
+- Automatic token refresh
+- Multi-user support with SQLite storage
+- Secure credential management
+
+## 📊 Testing
+
+All tools have been comprehensively tested and verified:
+- ✅ n8n-MCP: All core operations tested
+- ✅ ClickUp MCP: All 36 tools tested successfully
+- ✅ OAuth Proxy: Token flow and refresh verified
+
+See [Final Status](docs/deployment/FINAL_STATUS.md) for detailed test results.
+
+## 📝 Maintenance
+
+### Health Checks
 ```bash
-./scripts/setup-clickup-secrets.sh
-```
-You'll need:
-- ClickUp API key (from https://app.clickup.com/settings/apps)
-
-### 2. Deploy to VM (run on GCP VM)
-```bash
-# SSH to VM
-gcloud compute ssh abound-infra-vm --zone=us-east1-c --project=abound-infr
-
-# Clone/copy this project to VM
-# Then run deployment script
-./scripts/deploy-clickup.sh
-```
-You'll need:
-- ClickUp Team ID (from URL: https://app.clickup.com/XXXXXXX/...)
-
-### 3. Configure Caddy Reverse Proxy (manual on VM)
-See [clickup/DEPLOYMENT.md](./clickup/DEPLOYMENT.md) Step 6
-
-### 4. Verify Deployment
-```bash
-# Check health
 ./scripts/health-check-all.sh
-
-# Test MCP endpoint
-./scripts/test-mcp-endpoint.sh clickup-mcp
-
-# Test external access
-./scripts/test-mcp-endpoint.sh clickup-mcp --external
 ```
 
-### 5. Configure Clients
-
-**Cursor WSL/Windows** - Add to `~/.cursor/mcp.json`:
-```json
-{
-  "mcpServers": {
-    "clickup-mcp": {
-      "url": "https://clickup-mcp.aboundtechology.com/mcp",
-      "transport": {
-        "type": "http",
-        "headers": {
-          "Authorization": "Bearer <YOUR_AUTH_TOKEN>"
-        }
-      }
-    }
-  }
-}
-```
-
-**Claude Code** - HTTP transport (easiest!):
+### View Service Logs
 ```bash
-# Get token
-TOKEN=$(gcloud secrets versions access latest --secret=clickup-mcp-auth-token --project=abound-infr)
-
-# Add with HTTP transport - no bridge needed!
-claude mcp add -t http clickup-mcp https://clickup-mcp.aboundtechology.com/mcp \
-  -H "Authorization: Bearer $TOKEN"
+# On the VM
+sudo journalctl -u n8n-mcp -f
+sudo journalctl -u clickup-mcp -f
+sudo journalctl -u clickup-mcp-oauth-proxy -f
 ```
 
-**Claude Desktop** - Add via Settings → MCP Servers with URL and bearer token
+### Restart Services
+```bash
+# On the VM
+sudo systemctl restart n8n-mcp
+sudo systemctl restart clickup-mcp
+sudo systemctl restart clickup-mcp-oauth-proxy
+```
 
-See [CLIENT_SETUP.md](./CLIENT_SETUP.md) for complete setup for all clients.
+## 🤝 Contributing
 
-**Estimated Time:** 2-4 hours (first deployment)
+This project serves as a template for deploying MCP servers to GCP. When adding new MCP servers:
 
-## 📋 Deployment Checklist
+1. Follow the patterns in `scripts/` for deployment
+2. Use GCP Secret Manager for credentials
+3. Create systemd services with resource limits
+4. Document thoroughly in `docs/`
 
-- [ ] Pre-deployment checks (port availability, secrets access)
-- [ ] Secrets created in Google Secret Manager
-- [ ] VM service account granted access
-- [ ] Package installed on VM
-- [ ] `load-secrets.sh` created and tested
-- [ ] Systemd service created and running
-- [ ] Caddy reverse proxy configured
-- [ ] SSL certificate provisioned
-- [ ] Local health check passing
-- [ ] Local MCP endpoint working
-- [ ] External health check passing
-- [ ] External MCP endpoint working
-- [ ] Client configurations created
-- [ ] All clients tested
+## 📖 Additional Resources
 
-See detailed checklist in [clickup/DEPLOYMENT.md](./clickup/DEPLOYMENT.md)
+- [MCP Protocol Specification](https://spec.modelcontextprotocol.io/)
+- [Claude Code Documentation](https://docs.claude.com/claude-code)
+- [n8n-MCP GitHub](https://github.com/aboundTechOlogy/n8n-mcp)
+- [ClickUp MCP GitHub](https://github.com/taazkareem/clickup-mcp-server)
 
-## 🔗 Reference Materials
-
-### n8n-mcp Project (Read-Only Reference)
-- `/home/dreww/n8n-mcp/GCP_DEPLOYMENT_GUIDE.md` - Deployment patterns
-- `/home/dreww/n8n-mcp/SECURE_MULTI_IDE_SETUP.md` - Client configs
-- `/home/dreww/n8n-mcp/windows-bridge/` - Bridge script examples
-
-### External Documentation
-- [MCP Protocol Spec](https://modelcontextprotocol.io)
-- [ClickUp API Docs](https://clickup.com/api)
-- [Notion API Docs](https://developers.notion.com)
-- [Google Workspace APIs](https://developers.google.com/workspace)
-- [GitHub API Docs](https://docs.github.com/en/rest)
-
-## 🧪 Testing Strategy
-
-Each service must pass:
-1. **Local Health Check** - `curl http://localhost:<PORT>/health`
-2. **Local MCP Endpoint** - JSON-RPC initialize and tools/list
-3. **External Access** - `curl https://<service>-mcp.aboundtechology.com/health`
-4. **Claude Desktop** - OAuth or bearer token connection
-5. **Cursor WSL** - Direct HTTP connection
-6. **Cursor Windows** - Direct HTTP connection
-7. **Claude Code Windows** - Bridge script connection
-
-## 🔐 Security Architecture
-
-### Server-Side
-- **Bearer tokens** for HTTP authentication
-- **Session IDs** for persistent connections
-- **Google Secrets Manager** for all credentials
-- **Systemd hardening** (NoNewPrivileges, PrivateTmp, etc.)
-- **Resource limits** (512MB RAM, 50% CPU)
-
-### Client-Side
-- **Claude Desktop** - OAuth 2.0 (auto-discovery)
-- **Claude Code WSL** - stdio (local server)
-- **Claude Code Windows** - Bridge script (stdio → HTTPS)
-- **Cursor WSL/Windows** - Direct HTTP with bearer token
-
-## 📊 Port Allocation
-
-| Service | Port | Status | Subdomain |
-|---------|------|--------|-----------|
-| n8n-mcp | 3000 | ✅ Active | n8n-mcp.aboundtechology.com |
-| ClickUp | 3002 | 🔜 Planned | clickup-mcp.aboundtechology.com |
-| Notion | 3003 | 🔜 Planned | notion-mcp.aboundtechology.com |
-| Google Workspace | 3004 | 🔜 Planned | google-workspace-mcp.aboundtechology.com |
-| GitHub | 3005 | 🔜 Planned | github-mcp.aboundtechology.com (if self-hosted) |
-
-**Note:** Port 3001 reserved, not using Docker Compose (individual systemd services)
-
-## 🚨 Common Pitfalls to Avoid
-
-1. ❌ Deploying to wrong directory
-2. ❌ Missing Secrets Manager permissions
-3. ❌ Not tracking session IDs
-4. ❌ Forgetting to reload Caddy
-5. ❌ Port conflicts
-6. ❌ Missing client environment testing
-7. ❌ Inadequate documentation
-8. ❌ Skipping health checks
-
-## ✅ Success Criteria
-
-Deployment complete when:
-- All services in `/opt/ai-agent-platform/mcp-servers/`
-- All credentials in Google Secrets Manager
-- All services have systemd units
-- All services accessible via HTTPS
-- All clients configured and tested
-- All documentation complete
-
-## 🎯 Next Steps
-
-1. ✅ Review deployment plan and create documentation
-2. 🔜 Get ClickUp API key from https://app.clickup.com/settings/apps
-3. 🔜 Run `./scripts/setup-clickup-secrets.sh` (from local machine)
-4. 🔜 SSH to VM and run `./scripts/deploy-clickup.sh`
-5. 🔜 Configure Caddy reverse proxy
-6. 🔜 Test all endpoints and client configurations
-7. 🔜 Update this project as template for future deployments
-
-## 🔄 After ClickUp Deployment
-
-Once ClickUp MCP is deployed:
-1. ✅ Project named `clickup-mcp`
-2. Create new projects for other services based on this template:
-   - `notion-mcp`
-   - `google-workspace-mcp`
-   - `github-mcp`
-3. Update `DEPLOYMENT_PLAN_V2.md` with ClickUp-specific lessons learned
-4. Use updated plan for next service deployment
+## 📅 Last Updated
+October 9, 2025
 
 ---
 
-**Project Created:** October 9, 2025
-**Based on:** n8n-mcp production deployment experience
-**Current Focus:** ClickUp MCP Server
-**Status:** 🚧 Ready for deployment
+**Infrastructure**: GCP VM `abound-infra-vm` (us-east1-c)
+**Maintainer**: Andrew Whalen <andrew@aboundtechology.com>
