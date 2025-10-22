@@ -10,10 +10,11 @@ The enhanced ClickUp MCP server with 88 tools is built from a modified version o
 
 **Local Development:** The source code is in `clickup-mcp-server/` directory (git-ignored, not committed to this repo)
 
-## Upstream Repository
+## Repository
 
-- **Original:** https://github.com/taazkareem/clickup-mcp-server
-- **Version:** v0.8.5 (forked on October 22, 2025)
+- **Enhanced Fork:** https://github.com/aboundTechOlogy/clickup-mcp-server (88 tools)
+- **Original Upstream:** https://github.com/taazkareem/clickup-mcp-server (36 tools)
+- **Forked From:** v0.8.5 (October 22, 2025)
 
 ## Enhancement Details
 
@@ -127,22 +128,16 @@ npm run build
 ./scripts/deploy-enhanced-clickup.sh
 ```
 
-### Creating Your Own Fork (Recommended)
+### Cloning the Enhanced Server
 
-To maintain your own version:
+To get the enhanced server source code:
 
-1. Fork https://github.com/taazkareem/clickup-mcp-server to your GitHub account
-2. Update the remote:
-   ```bash
-   cd clickup-mcp-server
-   git remote set-url origin https://github.com/aboundTechOlogy/clickup-mcp-server.git
-   ```
-3. Commit your enhancements:
-   ```bash
-   git add -A
-   git commit -m "Add 52 new tools for complete ClickUp API coverage"
-   git push origin main
-   ```
+```bash
+git clone https://github.com/aboundTechOlogy/clickup-mcp-server.git
+cd clickup-mcp-server
+npm install
+npm run build
+```
 
 ## Architecture Notes
 
