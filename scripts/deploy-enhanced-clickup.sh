@@ -4,6 +4,9 @@ set -e
 # Enhanced ClickUp MCP Server Deployment Script
 # Deploys the locally enhanced clickup-mcp-server to GCP VM
 
+# Use full path to gcloud
+GCLOUD="/home/dreww/google-cloud-sdk/bin/gcloud"
+
 PROJECT_ID="abound-infr"
 VM_NAME="abound-infra-vm"
 ZONE="us-east1-c"
@@ -28,14 +31,14 @@ echo ""
 
 # Step 2: Create deployment directory on VM
 echo "Step 2: Creating deployment directory on VM..."
-gcloud compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID -- \
+$GCLOUD compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID -- \
     "sudo mkdir -p $VM_PATH && sudo chown dreww:dreww $VM_PATH"
 echo "✅ Directory created"
 echo ""
 
 # Step 3: Copy enhanced server to VM
 echo "Step 3: Copying enhanced server files to VM..."
-gcloud compute scp --recurse \
+$GCLOUD compute scp --recurse \
     $LOCAL_BUILD_DIR/build \
     $LOCAL_BUILD_DIR/package.json \
     $LOCAL_BUILD_DIR/package-lock.json \
@@ -47,14 +50,14 @@ echo ""
 
 # Step 4: Install dependencies on VM (skip prepare script)
 echo "Step 4: Installing dependencies on VM..."
-gcloud compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID -- \
+$GCLOUD compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID -- \
     "cd $VM_PATH && npm install --production --ignore-scripts"
 echo "✅ Dependencies installed"
 echo ""
 
 # Step 5: Create systemd service file
 echo "Step 5: Creating enhanced systemd service..."
-gcloud compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID -- "sudo tee /etc/systemd/system/clickup-mcp-enhanced.service" << 'EOF'
+$GCLOUD compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID -- "sudo tee /etc/systemd/system/clickup-mcp-enhanced.service" << 'EOF'
 [Unit]
 Description=Enhanced ClickUp MCP Server (90 tools)
 After=network.target
@@ -90,7 +93,7 @@ echo ""
 
 # Step 6: Create start script on VM
 echo "Step 6: Creating startup script on VM..."
-gcloud compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID -- \
+$GCLOUD compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID -- \
     "cat > $VM_PATH/start-enhanced.sh" << 'EOF'
 #!/bin/bash
 set -e
@@ -125,14 +128,14 @@ echo ""
 
 # Step 7: Make start script executable
 echo "Step 7: Making start script executable..."
-gcloud compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID -- \
+$GCLOUD compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID -- \
     "chmod +x $VM_PATH/start-enhanced.sh"
 echo "✅ Script made executable"
 echo ""
 
 # Step 8: Reload systemd and enable service
 echo "Step 8: Enabling enhanced service..."
-gcloud compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID -- \
+$GCLOUD compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID -- \
     "sudo systemctl daemon-reload && sudo systemctl enable clickup-mcp-enhanced.service"
 echo "✅ Service enabled"
 echo ""
