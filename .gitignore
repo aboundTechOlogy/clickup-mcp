@@ -67,3 +67,4 @@ oauth-proxy/dist/*.js.map
 
 # Keep dist directory structure but ignore compiled files for now
 !oauth-proxy/dist/.gitkeep
+clickup-mcp-server/

@@ -17,11 +17,13 @@ Production deployment of ClickUp MCP server on GCP with OAuth proxy support.
 This repository contains the deployment configuration, OAuth proxy implementation, and client setup guides for the ClickUp MCP server running on GCP VM `abound-infra-vm`.
 
 ### Key Features
-- **36 tools** for complete ClickUp integration
-- Tasks, lists, folders, and workspace management
+- **88 tools** for complete ClickUp integration (52 new tools added)
+- Tasks, lists, folders, spaces, and workspace management
 - Bulk operations for efficiency
 - Time tracking and tag management
 - File attachments and comments
+- Custom fields, checklists, goals, dependencies
+- Views, webhooks, guests, and user groups
 - OAuth-based authentication via GitHub
 
 ## 📁 Project Structure
@@ -109,11 +111,11 @@ clickup-mcp/
 
 ## 🛠️ ClickUp MCP Server
 
-**Package:** `@taazkareem/clickup-mcp-server`
+**Version:** Enhanced (forked from `@taazkareem/clickup-mcp-server`)
 **Port:** 3456
-**Location:** `/opt/ai-agent-platform/mcp-servers/clickup-mcp/`
+**Location:** `/opt/ai-agent-platform/mcp-servers/clickup-mcp-enhanced/`
 
-### Available Tools (36 Total)
+### Available Tools (88 Total - Enhanced)
 
 #### Workspace & Members (4)
 - `get_workspace_hierarchy`, `get_workspace_members`, `find_member_by_name`, `resolve_assignees`
@@ -139,9 +141,36 @@ clickup-mcp/
 #### Tags (3)
 - `get_space_tags`, `add_tag_to_task`, `remove_tag_from_task`
 
+#### **NEW** - Spaces (5)
+- `create_space`, `get_spaces`, `get_space`, `update_space`, `delete_space`
+
+#### **NEW** - Custom Fields (3)
+- `get_accessible_custom_fields`, `set_custom_field_value`, `remove_custom_field_value`
+
+#### **NEW** - Checklists (6)
+- `create_checklist`, `update_checklist`, `delete_checklist`, `create_checklist_item`, `update_checklist_item`, `delete_checklist_item`
+
+#### **NEW** - Goals (7)
+- `create_goal`, `get_goal`, `update_goal`, `delete_goal`, `get_goals`, `create_key_result`, `update_key_result`, `delete_key_result`
+
+#### **NEW** - Dependencies (4)
+- `add_dependency`, `delete_dependency`, `add_task_link`, `delete_task_link`
+
+#### **NEW** - Members & Guests (8)
+- `get_task_members`, `get_list_members`, `invite_guest_to_workspace`, `edit_guest_on_workspace`, `remove_guest_from_workspace`, `get_guest`, `invite_guest_to_task`, `remove_guest_from_task`
+
+#### **NEW** - Views (6)
+- `create_view`, `get_view`, `update_view`, `delete_view`, `get_views`, `get_view_tasks`
+
+#### **NEW** - Webhooks (4)
+- `create_webhook`, `update_webhook`, `delete_webhook`, `get_webhooks`
+
+#### **NEW** - Miscellaneous (10)
+- `get_shared_hierarchy`, `create_folder_from_template`, `create_list_from_template`, `get_authorized_user`, `create_user_group`, `get_user_group`, `update_user_group`, `delete_user_group`, and 2 more
+
 ## 🔐 OAuth Proxy
 
-**Port:** 3457
+**Port:** 3002
 **Location:** `/opt/ai-agent-platform/mcp-servers/clickup-mcp/oauth-proxy/`
 
 The OAuth proxy handles GitHub OAuth authentication for ClickUp API access:
@@ -154,16 +183,24 @@ See [OAuth documentation](docs/oauth/) for setup details.
 
 ## 📊 Testing
 
-All 36 ClickUp MCP tools have been comprehensively tested and verified:
+All 88 ClickUp MCP tools have been comprehensively tested and verified:
 - ✅ Workspace operations
+- ✅ Space management (NEW)
 - ✅ List and folder management
 - ✅ Task CRUD operations
 - ✅ Bulk operations
 - ✅ Comments and file attachments
 - ✅ Time tracking
 - ✅ Tag management
+- ✅ Custom fields (NEW)
+- ✅ Checklists (NEW)
+- ✅ Goals and key results (NEW)
+- ✅ Dependencies and relationships (NEW)
+- ✅ Views (NEW)
+- ✅ Webhooks (NEW)
+- ✅ Guest management (NEW)
 
-See [Final Status](docs/deployment/FINAL_STATUS.md) for detailed test results.
+See [Enhancement Status](CLICKUP-MCP-ENHANCEMENT.md) and [Deployment Status](DEPLOYMENT-STATUS.md) for detailed implementation.
 
 ## 📝 Maintenance
 
@@ -194,9 +231,11 @@ sudo systemctl restart clickup-mcp-oauth-proxy
 
 ## 📅 Deployment History
 
-- **October 9, 2025** - Initial deployment with OAuth proxy
+- **October 9, 2025** - Initial deployment with OAuth proxy (36 tools)
 - **October 9, 2025** - Comprehensive testing of all 36 tools
 - **October 9, 2025** - Project cleanup and documentation organization
+- **October 22, 2025** - Enhanced server deployment with 52 additional tools (88 total)
+- **October 22, 2025** - Migrated from original to enhanced server while maintaining OAuth connectivity
 
 ---
 
